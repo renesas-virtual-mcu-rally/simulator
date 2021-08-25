@@ -4,4 +4,4 @@ Renesas MCU Rally is an annual worldwide student robotics competition, hosted by
 
 The Renesas Virtual MCU Rally is the virtual counterpart in which simulated robots compete according to the same regulations but in a virtual environment.
 
-To get started, see the [Documentation](https://github.com/renesas-virtual-mcu-rally/simulator/instructions.pdf)!
+To get started, see the [Documentation](https://github.com/renesas-virtual-mcu-rally/simulator/blob/master/instructions.pdf)!
