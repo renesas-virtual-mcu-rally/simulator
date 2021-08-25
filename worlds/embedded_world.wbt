@@ -1,0 +1,53 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+  basicTimeStep 5
+  coordinateSystem "NUE"
+  contactProperties [
+    ContactProperties {
+    }
+    ContactProperties {
+      material2 "nofriction"
+      coulombFriction [
+        0
+      ]
+    }
+    ContactProperties {
+      material2 "soft"
+      coulombFriction [
+        0.421531081199646
+      ]
+    }
+    ContactProperties {
+      material2 "medium"
+      coulombFriction [
+        0.32153111696243286
+      ]
+    }
+    ContactProperties {
+      material2 "hard"
+      coulombFriction [
+        0.30000001192092896
+      ]
+    }
+  ]
+}
+Viewpoint {
+  orientation -0.6187789203713466 -0.7392137961295019 -0.2658488505069786 1.0854967720372504
+  position -1.81709212894399 2.3076592488557797 1.628049474818903
+  follow "robot"
+  followSmoothness 0.01
+}
+MCUFloor {
+}
+TexturedBackground {
+  texture "stadium"
+  luminosity 0.3
+}
+TexturedBackgroundLight {
+}
+MCUTimingGate {
+}
+MCUTrackTest {
+}
+DEF MCUCar MCUCar {
+}

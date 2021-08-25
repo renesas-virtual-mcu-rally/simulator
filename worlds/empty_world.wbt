@@ -1,0 +1,47 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+  basicTimeStep 5
+  coordinateSystem "NUE"
+  contactProperties [
+    ContactProperties {
+    }
+    ContactProperties {
+      material2 "nofriction"
+      coulombFriction [
+        0
+      ]
+    }
+    ContactProperties {
+      material2 "soft"
+      coulombFriction [
+        1
+      ]
+    }
+    ContactProperties {
+      material2 "medium"
+      coulombFriction [
+        0.9
+      ]
+    }
+    ContactProperties {
+      material2 "hard"
+      coulombFriction [
+        0.85
+      ]
+    }
+  ]
+}
+Viewpoint {
+  orientation -1 0 0 1.5708
+  position 0 10 0
+  followType "Pan and Tilt Shot"
+  followSmoothness 0.01
+}
+MCUFloor {
+}
+TexturedBackground {
+  texture "stadium"
+  luminosity 0.3
+}
+TexturedBackgroundLight {
+}
