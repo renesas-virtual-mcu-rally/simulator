@@ -1,13 +1,17 @@
 #include "renesas_api.h"
 
-#define UPRAMP 60.0
-#define FAST 30.0
+#define UPRAMP 80.0
+#define FAST 40.0
 #define MEDIUM 20.0
 #define SLOW 10.0
-#define BRAKE -40.0
+#define BRAKE -60.0
 
-#define STRICT 2000.0
-#define LOOSE 20.0
+#define STRICT 1500.0
+#define LOOSE 25.0
+
+#define DETECTED_NB 2
+#define RAMP_UP_ANGLE 0.009
+#define RAMP_DOWN_ANGLE 0.018
 
 enum states_t
 {
@@ -22,10 +26,20 @@ enum states_t
   RAMP_DOWN
 } state = FOLLOW;
 
+enum detected_t
+{
+  LEFT_CHANGE,
+  RIGHT_CHANGE,
+  CORNER,
+  NOLINE,
+  ANYLINE
+};
+
+enum detected_t detected_current = NOLINE;
+enum detected_t detected_last = NOLINE;
+int detected_number = 0;
+
 double last_time = 0.0;
-int left_change_pending = 0;
-int right_change_pending = 0;
-int detected_state = FOLLOW;
 
 int main(int argc, char **argv)
 {
@@ -49,77 +63,86 @@ int main(int argc, char **argv)
       {
         double_line++;
         if (i < 4)
-        {
           left_change++;
-        }
         else
-        {
           right_change++;
-        }
       }
     }
     line = weighted_sum / sum - 3.5;
+    if (double_line > 6)
+      detected_current = CORNER;
+    else if (left_change > 3)
+      detected_current = LEFT_CHANGE;
+    else if (right_change > 3)
+      detected_current = RIGHT_CHANGE;
+    else if (double_line == 0)
+      detected_current = NOLINE;
+    else
+      detected_current = ANYLINE;
+
+    if (detected_current == detected_last)
+      detected_number++;
+    else
+      detected_number = 0;
 
     switch (state)
     {
     case FOLLOW:
-      motor(FAST, FAST, FAST, FAST);
+      motor(FAST - fabs(100 * line), FAST - fabs(100 * line), FAST - fabs(100 * line), FAST - fabs(100 * line));
       handle(STRICT * line);
-      if (angles[1] > 0.1)
+      if (angles[1] > RAMP_UP_ANGLE)
       {
         last_time = time();
         state = RAMP_UP;
         printf("RAMP UP\n");
       }
-      else if (angles[1] < -0.1)
+      else if (angles[1] < -RAMP_DOWN_ANGLE)
       {
         last_time = time();
         state = RAMP_DOWN;
         printf("RAMP DOWN\n");
       }
-      else if (double_line > 6)
+      else if (detected_current == CORNER && detected_number >= DETECTED_NB)
       {
-        if (detected_state == CORNER_IN)
-        {
-          last_time = time();
-          state = CORNER_IN;
-          printf("CORNER IN\n");
-        }
-        detected_state = CORNER_IN;
+        last_time = time();
+        state = CORNER_IN;
+        printf("CORNER IN\n");
       }
-      else if (time() - last_time > 0.2 && right_change > 3)
+
+      else if (time() - last_time > 0.2 && detected_current == RIGHT_CHANGE && detected_number >= DETECTED_NB)
       {
-        if (detected_state == RIGHT_CHANGE_DETECTED)
-        {
-          last_time = time();
-          state = RIGHT_CHANGE_DETECTED;
-          printf("RIGHT_CHANGE_DETECTED\n");
-        }
-        detected_state = RIGHT_CHANGE_DETECTED;
+        last_time = time();
+        state = RIGHT_CHANGE_DETECTED;
+        printf("RIGHT_CHANGE_DETECTED\n");
       }
-      else if (time() - last_time > 0.2 && left_change > 3)
+      else if (time() - last_time > 0.2 && detected_current == LEFT_CHANGE && detected_number >= DETECTED_NB)
       {
-        if (detected_state == LEFT_CHANGE_DETECTED)
-        {
-          last_time = time();
-          state = LEFT_CHANGE_DETECTED;
-          printf("LEFT_CHANGE_DETECTED\n");
-        }
-        detected_state = LEFT_CHANGE_DETECTED;
+        last_time = time();
+        state = LEFT_CHANGE_DETECTED;
+        printf("LEFT_CHANGE_DETECTED\n");
       }
       break;
     case CORNER_IN:
       if (time() - last_time < 0.1)
-      {
         motor(BRAKE, BRAKE, BRAKE, BRAKE);
-      }
       else
-      {
         motor(SLOW, SLOW, SLOW, SLOW);
+
+      if (angles[1] > RAMP_UP_ANGLE)
+      {
+        last_time = time();
+        state = RAMP_UP;
+        printf("RAMP UP\n");
+      }
+      else if (angles[1] < -RAMP_DOWN_ANGLE)
+      {
+        last_time = time();
+        state = RAMP_DOWN;
+        printf("RAMP DOWN\n");
       }
 
       handle(LOOSE * line);
-      if (time() - last_time > 0.2 && (left_change > 3 || right_change > 3))
+      if (time() - last_time > 0.3 && (detected_current == LEFT_CHANGE || detected_current == RIGHT_CHANGE) && detected_number >= DETECTED_NB)
       {
         last_time = time();
         state = CORNER_OUT;
@@ -139,7 +162,7 @@ int main(int argc, char **argv)
     case RIGHT_CHANGE_DETECTED:
       motor(MEDIUM, MEDIUM, MEDIUM, MEDIUM);
       handle(LOOSE * line);
-      if (double_line == 0)
+      if (detected_current == NOLINE && detected_number >= DETECTED_NB)
       {
         last_time = time();
         state = RIGHT_TURN;
@@ -154,11 +177,11 @@ int main(int argc, char **argv)
       break;
     case RIGHT_TURN:
       motor(MEDIUM, MEDIUM, MEDIUM, MEDIUM);
-      if (time() - last_time < 0.45)
-        handle(-40);
-      else if (time() - last_time < 0.6)
+      if (time() - last_time < 0.65)
+        handle(-20);
+      else if (time() - last_time < 0.9)
         handle(20);
-      else if (double_line > 1)
+      else if (detected_current == ANYLINE && detected_number >= DETECTED_NB)
       {
         last_time = time();
         state = FOLLOW;
@@ -168,7 +191,7 @@ int main(int argc, char **argv)
     case LEFT_CHANGE_DETECTED:
       motor(MEDIUM, MEDIUM, MEDIUM, MEDIUM);
       handle(LOOSE * line);
-      if (double_line == 0)
+      if (detected_current == NOLINE && detected_number >= DETECTED_NB)
       {
         last_time = time();
         state = LEFT_TURN;
@@ -183,11 +206,11 @@ int main(int argc, char **argv)
       break;
     case LEFT_TURN:
       motor(MEDIUM, MEDIUM, MEDIUM, MEDIUM);
-      if (time() - last_time < 0.45)
-        handle(40);
-      else if (time() - last_time < 0.6)
+      if (time() - last_time < 0.65)
+        handle(20);
+      else if (time() - last_time < 0.9)
         handle(-20);
-      else if (double_line > 1)
+      else if (detected_current == ANYLINE && detected_number >= DETECTED_NB)
       {
         last_time = time();
         state = FOLLOW;
@@ -197,7 +220,7 @@ int main(int argc, char **argv)
     case RAMP_UP:
       motor(UPRAMP, UPRAMP, UPRAMP, UPRAMP);
       handle(STRICT * line);
-      if (angles[1] < 0.05)
+      if (angles[1] < RAMP_UP_ANGLE)
       {
         last_time = time();
         state = FOLLOW;
@@ -205,9 +228,9 @@ int main(int argc, char **argv)
       }
       break;
     case RAMP_DOWN:
-      motor(SLOW, SLOW, SLOW, SLOW);
+      motor(100 * angles[1], 100 * angles[1], 100 * angles[1], 100 * angles[1]);
       handle(STRICT * line);
-      if (angles[1] > -0.05)
+      if (angles[1] > -RAMP_DOWN_ANGLE)
       {
         last_time = time();
         state = FOLLOW;
@@ -215,6 +238,8 @@ int main(int argc, char **argv)
       }
       break;
     }
+
+    detected_last = detected_current;
   };
 
   wb_robot_cleanup(); // this call is required for WeBots cleanup

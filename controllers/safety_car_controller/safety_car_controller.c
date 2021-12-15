@@ -1,7 +1,7 @@
 #include "renesas_api.h"
 
 #define UPRAMP 80.0
-#define FAST 50.0
+#define FAST 40.0
 #define MEDIUM 20.0
 #define SLOW 10.0
 #define BRAKE -60.0
@@ -10,7 +10,8 @@
 #define LOOSE 25.0
 
 #define DETECTED_NB 2
-#define RAMP_ANGLE 0.01
+#define RAMP_UP_ANGLE 0.009
+#define RAMP_DOWN_ANGLE 0.018
 
 enum states_t
 {
@@ -89,13 +90,13 @@ int main(int argc, char **argv)
     case FOLLOW:
       motor(FAST - fabs(100 * line), FAST - fabs(100 * line), FAST - fabs(100 * line), FAST - fabs(100 * line));
       handle(STRICT * line);
-      if (angles[1] > RAMP_ANGLE)
+      if (angles[1] > RAMP_UP_ANGLE)
       {
         last_time = time();
         state = RAMP_UP;
         printf("RAMP UP\n");
       }
-      else if (angles[1] < -RAMP_ANGLE)
+      else if (angles[1] < -RAMP_DOWN_ANGLE)
       {
         last_time = time();
         state = RAMP_DOWN;
@@ -127,13 +128,13 @@ int main(int argc, char **argv)
       else
         motor(SLOW, SLOW, SLOW, SLOW);
 
-      if (angles[1] > RAMP_ANGLE)
+      if (angles[1] > RAMP_UP_ANGLE)
       {
         last_time = time();
         state = RAMP_UP;
         printf("RAMP UP\n");
       }
-      else if (angles[1] < -RAMP_ANGLE)
+      else if (angles[1] < -RAMP_DOWN_ANGLE)
       {
         last_time = time();
         state = RAMP_DOWN;
@@ -219,7 +220,7 @@ int main(int argc, char **argv)
     case RAMP_UP:
       motor(UPRAMP, UPRAMP, UPRAMP, UPRAMP);
       handle(STRICT * line);
-      if (angles[1] < 0.05)
+      if (angles[1] < RAMP_UP_ANGLE)
       {
         last_time = time();
         state = FOLLOW;
@@ -227,9 +228,9 @@ int main(int argc, char **argv)
       }
       break;
     case RAMP_DOWN:
-      motor(0, 0, 0, 0);
+      motor(100 * angles[1], 100 * angles[1], 100 * angles[1], 100 * angles[1]);
       handle(STRICT * line);
-      if (angles[1] > -0.05)
+      if (angles[1] > -RAMP_DOWN_ANGLE)
       {
         last_time = time();
         state = FOLLOW;

@@ -269,7 +269,7 @@ PROTO MCUCar [
                       axis 0 0 1
                       anchor %{=fields.sensorBase.value}% 0 0
                       minStop -0.001
-                      maxStop 1
+                      maxStop 0.001
                       dampingConstant 0.01
                     }
                     endPoint Slot {

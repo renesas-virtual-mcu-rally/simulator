@@ -14,13 +14,13 @@ WorldInfo {
     ContactProperties {
       material2 "soft"
       coulombFriction [
-        0.421531081199646
+        0.15
       ]
     }
     ContactProperties {
       material2 "medium"
       coulombFriction [
-        0.32153111696243286
+        0.25
       ]
     }
     ContactProperties {
@@ -47,7 +47,7 @@ TexturedBackgroundLight {
 }
 MCUTimingGate {
 }
-MCUTrackTest {
+MCUTrackSuzuka {
 }
 DEF MCUCar MCUCar {
 }
