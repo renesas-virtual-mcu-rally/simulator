@@ -209,8 +209,9 @@ PROTO MCUTrackSpa [
         translation -1.99998 0 1.00006
         rotation 0 -1 0 1.57079
       }
-      MCUCorner300 {
+      MCUCornerDouble {
         translation -2 0 0
+        rotation 0 1 0 -3.1415853071795863
       }
       MCUCorner400 {
         translation -3.00001 0 1e-05
@@ -231,10 +232,6 @@ PROTO MCUTrackSpa [
       MCUStraight {
         translation -2 0 -0.999936
         rotation 0 -1 0 1.57079
-      }
-      MCUCorner500 {
-        translation -2 0 0
-        rotation 0 1 0 -3.1415853071795863
       }
       MCUStraight {
         translation -1 0 0
