@@ -74,10 +74,10 @@ int main(int argc, char **argv) {
           }
           tv.showStartList(*competition.getCompetitors());
         } else if (competition.getStateTime() < 30.0) {
-          double start_position[3]{-2.0, 4.0, 3.0};
-          double end_position[3]{2.0, 4.0, 3.0};
-          double start_orientation[4]{-1.0, 0.0, 0.0, 0.95};
-          double end_orientation[4]{-1.0, 0.0, 0.0, 0.95};
+          double start_position[3]{-2.0, 5.0, 5.0};
+          double end_position[3]{2.0, 5.0, 5.0};
+          double start_orientation[4]{-0.677, 0.677, 0.286, 2.584};
+          double end_orientation[4]{-0.677, 0.677, 0.286, 2.584};
           tv.setCameraHelicopter(start_position, start_orientation, end_position, end_orientation, 30.0, competition.getStateTime());
           tv.showTimer(30 - (int)competition.getStateTime());
         } else if (competition.getStateTime() > 30.0) {

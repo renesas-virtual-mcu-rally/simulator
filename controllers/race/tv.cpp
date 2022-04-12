@@ -247,11 +247,11 @@ void TV::setCameraTracking(Node *robot_node) {
   struct quaternion robot_quaternion;
   quaternion_set_from_axis_anglef3(&robot_quaternion, robot_orientation[0], robot_orientation[1], robot_orientation[2], robot_orientation[3]);
   struct vector3 position_vector {
-    - 0.3, 4.0, 2.4
+    0.85, 1.8, 1.67
   };
   position_vector = *vector3_rotate_by_quaternion(&position_vector, &robot_quaternion);
   struct quaternion view_quaternion;
-  quaternion_set_from_axis_anglef3(&view_quaternion, -1, 0, 0, 1);
+  quaternion_set_from_axis_anglef3(&view_quaternion, -0.557, 0.702, 0.444, 2.96);
   robot_quaternion = *quaternion_multiply(&robot_quaternion, &view_quaternion);
   struct vector3 view_vector;
   double view_angle;
@@ -286,18 +286,18 @@ void TV::setCameraMounted(Node *robot_node) {
   struct quaternion robot_quaternion;
   quaternion_set_from_axis_anglef3(&robot_quaternion, robot_orientation[0], robot_orientation[1], robot_orientation[2], robot_orientation[3]);
   struct vector3 position_vector {
-    0.0, 0.1, 1.0
+    -1.0, 0.3, 0.0
   };
+  position_vector = *vector3_rotate_by_quaternion(&position_vector, &robot_quaternion);
+
   struct quaternion view_quaternion;
-  quaternion_set_from_axis_anglef3(&view_quaternion, 0, 0, -1, 0.3);
-  robot_quaternion = *quaternion_multiply(&robot_quaternion, &view_quaternion);
-  quaternion_set_from_axis_anglef3(&view_quaternion, 0, -1, 0, 1.5708);
+  quaternion_set_from_axis_anglef3(&view_quaternion, -0.985, 0.135, -0.103, 1.5807);
   robot_quaternion = *quaternion_multiply(&robot_quaternion, &view_quaternion);
   struct vector3 view_vector;
   double view_angle;
   quaternion_get_axis_anglev3(&robot_quaternion, &view_vector, &view_angle);
 
-  position_vector = *vector3_rotate_by_quaternion(&position_vector, &robot_quaternion);
+  // position_vector = *vector3_rotate_by_quaternion(&position_vector, &robot_quaternion);
 
   Field *orientation_field = view_point->getField("orientation");
   double orientation[4] = {0, -1, 0, 1.5708};
@@ -340,7 +340,7 @@ void TV::setCameraTV(Node *robot_node) {
 
 void TV::setCameraRandom(Node *robot_node) {
   double probability = uniformPositive(generator);
-  if (probability < 0.20) {
+  if (probability < 0.50) {
     setCameraMounted(robot_node);
   } else {
     setCameraTV(robot_node);
