@@ -1,4 +1,4 @@
-#VRML_SIM R2021b utf8
+#VRML_SIM R2022a utf8
 # tags: nonDeterministic
 
 PROTO MCUStraightRaised [
@@ -19,6 +19,7 @@ PROTO MCUStraightRaised [
     children [
       Transform {
         translation 0 0.281 0
+        rotation 1 0 0 -1.5707996938995747
         children [
           Shape {
             appearance Appearance {

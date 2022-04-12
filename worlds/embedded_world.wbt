@@ -1,4 +1,4 @@
-#VRML_SIM R2021b utf8
+#VRML_SIM R2022a utf8
 WorldInfo {
   basicTimeStep 5
   coordinateSystem "NUE"
@@ -14,26 +14,26 @@ WorldInfo {
     ContactProperties {
       material2 "soft"
       coulombFriction [
-        0.15
+        0.6727699999999943
       ]
     }
     ContactProperties {
       material2 "medium"
       coulombFriction [
-        0.25
+        0.5727699999999943
       ]
     }
     ContactProperties {
       material2 "hard"
       coulombFriction [
-        0.30000001192092896
+        0.3727699999999944
       ]
     }
   ]
 }
 Viewpoint {
-  orientation -0.6187789203713466 -0.7392137961295019 -0.2658488505069786 1.0854967720372504
-  position -1.81709212894399 2.3076592488557797 1.628049474818903
+  orientation -0.8260100810349539 0.5627266677941922 0.032342593926185915 2.090882151184157
+  position -2.9568742435730986 3.43891160154635 2.811165182649755
   follow "robot"
   followSmoothness 0.01
 }

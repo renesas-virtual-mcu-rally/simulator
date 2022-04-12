@@ -1,4 +1,4 @@
-#VRML_SIM R2021b utf8
+#VRML_SIM R2022a utf8
 # tags: nonDeterministic
 
 PROTO MCURamp [
@@ -19,7 +19,7 @@ PROTO MCURamp [
     children [
       Transform {
         translation 0 0.156 0
-        rotation 0 0 1 0.24434
+        rotation 0.985257 0.120971 -0.120971 -1.58565
         children [
           Shape {
             appearance Appearance {

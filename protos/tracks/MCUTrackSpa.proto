@@ -236,6 +236,13 @@ PROTO MCUTrackSpa [
       MCUStraight {
         translation -1 0 0
       }
+      MCURenesasGlow {
+        translation 0.75 0.01 -1
+        rotation 0 1 0 0
+        scale 3 1 3
+        emmissiveColor 0.2 0.15 0.8
+        emissiveIntensity 50
+      }
     ]
   }
 }

@@ -1,4 +1,4 @@
-# Copyright 1996-2020 Cyberbotics Ltd.
+# Copyright 1996-2021 Cyberbotics Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -65,7 +65,8 @@
 ###
 ###-----------------------------------------------------------------------------
 
-C_SOURCES = referee.c mcu.c
+CXXFLAGS=-g -std=c++17 -Wall
+CXX_SOURCES = race.cpp competition.cpp competitor.cpp gate.cpp safety_car.cpp tv.cpp
 INCLUDE = -I"include"
 
 ### Do not modify: this includes Webots global Makefile.include
