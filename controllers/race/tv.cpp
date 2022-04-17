@@ -340,7 +340,7 @@ void TV::setCameraTV(Node *robot_node) {
 
 void TV::setCameraRandom(Node *robot_node) {
   double probability = uniformPositive(generator);
-  if (probability < 0.50) {
+  if (probability < 0.20) {
     setCameraMounted(robot_node);
   } else {
     setCameraTV(robot_node);

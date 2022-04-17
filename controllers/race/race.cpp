@@ -39,6 +39,8 @@ int main(int argc, char **argv) {
   int update_counter{0};
   double current_progress{0.0};
 
+  srand(time(0));
+
   while (supervisor->step(TIME_STEP) != -1) {
     competition.incrementCurrentTime(TIME_STEP);
     switch (competition.getState()) {
@@ -52,14 +54,12 @@ int main(int argc, char **argv) {
             competition.removeRobot(robot);
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
           }
-          srand(time(0));
-          competition.shuffleCompetitors();
-
           // cout << "State: Welcome" << endl;
           gate.clearDisplays();
           track = competition.loadTrack();
           switch (competition.getCurrentTrackIndex()) {
             case 0:
+              competition.shuffleCompetitors();
               competition.setLapsTotal(1);
               tv.showTitle("Renesas Virtual MCU Rally\nQualifying starting soon.");
               break;
@@ -137,15 +137,8 @@ int main(int argc, char **argv) {
           tv.hideCompetitorData();
           tv.hideCurrentTime();
           tv.hideDiff();
-          // if (competition.getCurrentCompetitorIndex() > 0) {
           competition.sortCompetitorsSoFar();
-
-          // cout << "After sort:" << endl;
-          // for (auto &competitor : *competition.getCompetitors()) {
-          //   cout << competitor.getString(competition.getCurrentTrackIndex()) << endl;
-          // }
           tv.showBoard(*competition.getCompetitors(), competition.getCurrentCompetitorIndex(), competition.getCurrentTrackIndex());
-          // }
           if (competition.getCurrentCompetitorIndex() == (int)competition.getCompetitors()->size()) {
             // cout << "Sorting for next..." << endl;
             competition.sortCompetitorsForNext();
